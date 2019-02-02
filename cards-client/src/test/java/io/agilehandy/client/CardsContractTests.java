@@ -32,8 +32,9 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
  * @author Haytham Mohamed
  **/
 @RunWith(SpringRunner.class)
-@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.NONE)
-@AutoConfigureStubRunner(ids = {"io.agilehandy:cards-api:+:stubs:8080"},
+@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.NONE
+ , properties = {"services.cards.url=http://localhost:6565/cards"})
+@AutoConfigureStubRunner(ids = {"io.agilehandy:cards-api:+:stubs:6565"},
 		stubsMode = StubRunnerProperties.StubsMode.LOCAL)
 public class CardsContractTests {
 

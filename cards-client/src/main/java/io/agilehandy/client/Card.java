@@ -39,7 +39,9 @@ public class Card {
 	private String code;
 	private String max;
 	private String balance;
+	private String currency;
 
 	private Date LastTimeAccessed;
 	private String accessedBy;
+	private String merchant;
 }

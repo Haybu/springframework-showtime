@@ -47,4 +47,5 @@ public class Card {
 	private String code;
 	private String max;
 	private String balance;
+	private String currency;
 }

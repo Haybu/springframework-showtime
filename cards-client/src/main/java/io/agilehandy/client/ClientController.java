@@ -36,7 +36,7 @@ public class ClientController {
 		this.client = client;
 	}
 
-	@GetMapping("/{id}")
+	@GetMapping("/client/{id}")
 	private Card getCardById(@PathVariable("id") Integer id) throws CardNotFoundException {
 		 return client.getCard(id);
 	}

@@ -64,7 +64,7 @@ public class CardsControllerTests {
 	@Test
 	public void getCardById_shouldRetrieveOneCard() throws Exception, CardNotFoundException {
 		when(client.getCard(any())).thenReturn(card);
-		mockMvc.perform(MockMvcRequestBuilders.get("/1"))
+		mockMvc.perform(MockMvcRequestBuilders.get("/client/1"))
 				.andExpect(status().isOk())
 				.andExpect(jsonPath("number").value("1111 1111 1111 1111"))
 				.andExpect(jsonPath("holderName").value("John"))

@@ -32,9 +32,13 @@ public class CardsApiClient {
 
 	private final RestTemplate template;
 	private final String url;
+	private final String merchant;
 
-	public CardsApiClient(RestTemplate template, @Value("${services.cards.url}") String url) {
+	public CardsApiClient(RestTemplate template
+			, @Value("${services.cards.url}") String url
+			, @Value("${merchant}") String merchant) {
 		this.template = template;
+		this.merchant = merchant;
 		this.url = url;
 	}
 
@@ -45,6 +49,7 @@ public class CardsApiClient {
 		}
 		card.setLastTimeAccessed(new Date());
 		card.setAccessedBy("user1");
+		card.setMerchant(merchant);
 		return card;
 	}
 
