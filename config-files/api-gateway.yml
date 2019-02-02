@@ -1,0 +1,30 @@
+server:
+  port: 8100
+
+eureka:
+  client:
+    register-with-eureka: false
+
+spring:
+  cloud:
+    gateway:
+      routes:
+      - id: cards-api
+        uri: lb://cards-api
+        predicates:
+        - Path=/api/v1/cards/**
+        filters:
+        - RewritePath= /api/v1/cards/(?<segment>.*),/cards/$\{segment}
+      globalcors:
+        corsConfigurations:
+          '[/**]':
+            allowedOrigins: "*"
+            allowedHeaders: "*"
+            allowedMethods:
+            - GET
+            - POST
+            - OPTIONS
+            - HEAD
+            - PUT
+            - DELETE
+            - PATH

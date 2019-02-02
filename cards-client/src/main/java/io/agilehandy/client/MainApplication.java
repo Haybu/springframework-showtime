@@ -15,7 +15,7 @@ public class MainApplication {
 	}
 
 	@Bean
-	@LoadBalanced
+	//@LoadBalanced
 	public RestTemplate restTemplate() {
 		return new RestTemplateBuilder().build();
 	}
