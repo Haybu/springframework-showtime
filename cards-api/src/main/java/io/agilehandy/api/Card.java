@@ -25,8 +25,6 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import javax.persistence.SequenceGenerator;
-import java.util.Date;
 
 /**
  * @author Haytham Mohamed
@@ -40,13 +38,13 @@ public class Card {
 
 	@Id
 	@GeneratedValue(strategy= GenerationType.AUTO)
-	Integer id;
+	private Integer id;
 
-	String number;
-	String holderName;
-	String expMonth;
-	String expYear;
-	String code;
-	String max;
-	String balance;
+	private String number;
+	private String holderName;
+	private String expMonth;
+	private String expYear;
+	private String code;
+	private String max;
+	private String balance;
 }

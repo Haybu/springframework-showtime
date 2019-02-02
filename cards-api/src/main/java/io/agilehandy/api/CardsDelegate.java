@@ -19,8 +19,6 @@ package io.agilehandy.api;
 
 import org.springframework.stereotype.Service;
 
-import java.util.List;
-
 /**
  * @author Haytham Mohamed
  **/
@@ -39,6 +37,10 @@ public class CardsDelegate {
 	}
 
 	public Card byId(Integer id) {
-		return cardRepository.findById(id).orElseThrow(() -> new CardNotFoundException());
+		Card card = cardRepository.findById(id).orElseThrow(() -> new CardNotFoundException());
+		if (card == null) {
+			throw new CardNotFoundException();
+		}
+		return card;
 	}
 }
