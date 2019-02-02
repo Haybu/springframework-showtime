@@ -3,7 +3,7 @@ server:
 
 services:
   cards:
-    url: http://localhost:8080/cards
+    url: http://cards-api/cards
 
 merchant: BankTwo
 
