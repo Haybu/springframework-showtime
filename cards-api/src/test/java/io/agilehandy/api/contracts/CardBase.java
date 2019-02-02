@@ -37,7 +37,6 @@ import static org.mockito.ArgumentMatchers.*;
 /**
  * @author Haytham Mohamed
  **/
-
 @RunWith(SpringRunner.class)
 @WebMvcTest
 public class CardBase {

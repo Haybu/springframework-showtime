@@ -15,40 +15,36 @@
  */
 
 
-package io.agilehandy.api;
+package io.agilehandy.client;
 
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.context.annotation.Bean;
+import org.springframework.http.HttpStatus;
+import org.springframework.mock.web.MockHttpServletRequest;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 
-import java.util.Arrays;
-import java.util.Optional;
-
-import static org.mockito.ArgumentMatchers.*;
+import static org.mockito.Mockito.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 /**
  * @author Haytham Mohamed
  **/
 @RunWith(SpringRunner.class)
-@WebMvcTest(CardsController.class)
+@WebMvcTest
 public class CardsControllerTests {
-
-	@MockBean
-	CardsRepository repository;
-
-	@MockBean
-	CardsDelegate delegate;
 
 	@Autowired
 	MockMvc mockMvc;
+
+	@MockBean
+	CardsApiClient client;
 
 	Card card = null;
 
@@ -66,21 +62,9 @@ public class CardsControllerTests {
 	}
 
 	@Test
-	public void getAllCards_shouldRetrieveAllCards() throws Exception {
-		Mockito.when(repository.findAll()).thenReturn(Arrays.asList(card));
-		Mockito.when(delegate.all()).thenReturn(Arrays.asList(card));
-		mockMvc.perform(MockMvcRequestBuilders.get("/cards"))
-				.andExpect(status().isOk())
-				.andExpect(jsonPath("@.[0].number").value("1111 1111 1111 1111"))
-				.andExpect(jsonPath("@.[0].holderName").value("John"))
-				.andExpect(jsonPath("@.[0].code").value("333"))
-				;
-	}
-	@Test
-	public void getOneCard_shouldRetrieveOneCard() throws Exception {
-		Mockito.when(repository.findById(any())).thenReturn(Optional.of(card));
-		Mockito.when(delegate.byId(any())).thenReturn(card);
-		mockMvc.perform(MockMvcRequestBuilders.get("/cards/1"))
+	public void getCardById_shouldRetrieveOneCard() throws Exception, CardNotFoundException {
+		when(client.getCard(any())).thenReturn(card);
+		mockMvc.perform(MockMvcRequestBuilders.get("/1"))
 				.andExpect(status().isOk())
 				.andExpect(jsonPath("number").value("1111 1111 1111 1111"))
 				.andExpect(jsonPath("holderName").value("John"))
@@ -89,11 +73,10 @@ public class CardsControllerTests {
 	}
 
 	@Test
-	public void getNonExistingCard_shouldThrowException() throws Exception {
-		Mockito.when(repository.findById(any())).thenReturn(null);
-		Mockito.when(delegate.byId(any())).thenThrow(new CardNotFoundException());
-
-		mockMvc.perform(MockMvcRequestBuilders.get("/cards/1"))
-				.andExpect(status().isNotFound());
+	public void getInvalidCardById_shouldThrowException() throws Exception, CardNotFoundException {
+		when(client.getCard(any())).thenThrow(new CardNotFoundException());
+		mockMvc.perform(MockMvcRequestBuilders.get("/1"))
+				.andExpect(status().isNotFound())
+		;
 	}
 }

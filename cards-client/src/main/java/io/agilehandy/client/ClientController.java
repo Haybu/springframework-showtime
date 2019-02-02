@@ -15,7 +15,7 @@
  */
 
 
-package io.agilehandy.api;
+package io.agilehandy.client;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -27,27 +27,21 @@ import org.springframework.web.bind.annotation.RestController;
 /**
  * @author Haytham Mohamed
  **/
-
 @RestController
-public class CardsController {
+public class ClientController {
 
-	private final CardsDelegate delegate;
+	private final CardsApiClient client;
 
-	public CardsController(CardsDelegate delegate) {
-		this.delegate = delegate;
+	public ClientController(CardsApiClient client) {
+		this.client = client;
 	}
 
-	@GetMapping("/cards")
-	public Iterable<Card> getAllCards() {
-		return delegate.all();
-	}
-
-	@GetMapping("/cards/{id}")
-	public Card getById(@PathVariable("id") Integer id) {
-		return delegate.byId(id);
+	@GetMapping("/{id}")
+	private Card getCardById(@PathVariable("id") Integer id) throws CardNotFoundException {
+		 return client.getCard(id);
 	}
 
 	@ExceptionHandler
 	@ResponseStatus(HttpStatus.NOT_FOUND)
-	public void handleCardNotFoundException(CardNotFoundException exception) {}
+	public void NotFoundExceptionHandler(CardNotFoundException exp) {}
 }

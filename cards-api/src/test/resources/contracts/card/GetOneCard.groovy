@@ -7,11 +7,11 @@ Contract.make {
 
     request{
         method 'GET'
-        url '/1'
+        urlPath '/cards/1'
     }
 
     response {
-        status OK()
+        status 200
         body("""
                 {
                 "id": 1,

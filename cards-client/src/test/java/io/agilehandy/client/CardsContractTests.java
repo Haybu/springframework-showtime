@@ -15,41 +15,36 @@
  */
 
 
-package io.agilehandy.api;
+package io.agilehandy.client;
 
 import org.assertj.core.api.Assertions;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.boot.test.web.client.TestRestTemplate;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
+import org.springframework.cloud.contract.stubrunner.spring.AutoConfigureStubRunner;
+import org.springframework.cloud.contract.stubrunner.spring.StubRunnerProperties;
 import org.springframework.test.context.junit4.SpringRunner;
+
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 /**
  * @author Haytham Mohamed
  **/
 @RunWith(SpringRunner.class)
-@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
-public class IntegrationTest {
+@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.NONE)
+@AutoConfigureStubRunner(ids = {"io.agilehandy:cards-api:+:stubs:8080"},
+		stubsMode = StubRunnerProperties.StubsMode.LOCAL)
+public class CardsContractTests {
 
 	@Autowired
-	TestRestTemplate template;
+	CardsApiClient client;
 
 	@Test
-	public void httpGetCard_shouldGetCardSuccessfully() {
-
-		ResponseEntity<Card> response = template.getForEntity("/cards/1", Card.class);
-		Assertions.assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
-		Assertions.assertThat(response.getBody().getNumber()).isNotBlank();
-		Assertions.assertThat(response.getBody().getHolderName()).isNotBlank();
-		Assertions.assertThat(response.getBody().getCode()).isNotBlank();
-	}
-
-	@Test
-	public void httpGetInvalidCard_shouldThrowException() {
-		ResponseEntity<Card> response = template.getForEntity("/-1", Card.class);
-		Assertions.assertThat(response.getStatusCode()).isEqualTo(HttpStatus.NOT_FOUND);
+	public void getCardById_shouldRetrieveOneCard() throws CardNotFoundException {
+		Card card = client.getCard(1);
+		Assertions.assertThat(card.getCode()).isEqualTo("333");
+		Assertions.assertThat(card.getNumber()).isEqualTo("4409 3350 3050 2136");
+		Assertions.assertThat(card.getHolderName()).isEqualTo("Sam");
 	}
 }

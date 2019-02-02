@@ -1,0 +1,12 @@
+server:
+  port: 8081
+  servlet:
+    context-path: /client
+
+services:
+  cards:
+    url: http://localhost:8080/cards
+
+#stubrunner:
+#  ids: 'com.example:http-server-dsl:+:stubs:8080'
+#  repositoryRoot: http://repo.spring.io/libs-snapshot
