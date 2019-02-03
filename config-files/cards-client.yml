@@ -6,6 +6,45 @@ services:
     url: http://localhost:8100/api/v1/cards
 
 merchant: BankTwo
+spring:
+  main:
+    allow-bean-definition-overriding: true
+  security:
+    oauth2:
+      client:
+        registration:
+          login-client:
+            client-id: login-client
+            client-secret: secret
+            client-authentication-method: basic
+            scope: openid,profile,email
+            authorization-grant-type: authorization_code
+            client-name: Login Client
+            redirect-uri-template: "{baseUrl}/login/oauth2/code/{registrationId}"
+            provider: uaa
+          api-cards-view:
+            client-id: cards-api
+            client-secret: secret
+            client-authentication-method: basic
+            scope: cards.view
+            authorization-grant-type: client_credentials
+            client-name: Cards API View Access
+            provider: uaa
+          api-cards-edit:
+            client-id: cards-api
+            client-secret: secret
+            client-authentication-method: basic
+            scope: cards.view,cards.edit
+            authorization-grant-type: client_credentials
+            client-name: Cards API Edit Access
+            provider: uaa
+        provider:
+          uaa:
+            authorization-uri: http://localhost:8099/uaa/oauth/authorize
+            token-uri: http://localhost:8099/uaa/oauth/token
+            user-info-uri: http://localhost:8099/uaa/userinfo
+            user-name-attribute: sub
+            jwk-set-uri: http://localhost:8099/uaa/token_keys
 
 
 #stubrunner:

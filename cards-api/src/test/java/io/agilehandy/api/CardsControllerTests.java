@@ -24,6 +24,9 @@ import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.security.test.context.support.WithMockUser;
+import org.springframework.test.context.ActiveProfiles;
+import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
@@ -38,7 +41,14 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
  * @author Haytham Mohamed
  **/
 @RunWith(SpringRunner.class)
-@WebMvcTest(CardsController.class)
+@WebMvcTest(controllers = {CardsController.class})
+@TestPropertySource(properties = {
+		"eureka.client.register-with-eureka=false",
+		"eureka.client.fetch-registry=false",
+		"spring.cloud.config.enabled=false",
+		"currency=US-DOLLAR"
+})
+@ActiveProfiles("test")
 public class CardsControllerTests {
 
 	@MockBean
@@ -66,6 +76,7 @@ public class CardsControllerTests {
 	}
 
 	@Test
+	@WithMockUser
 	public void getAllCards_shouldRetrieveAllCards() throws Exception {
 		Mockito.when(repository.findAll()).thenReturn(Arrays.asList(card));
 		Mockito.when(delegate.all()).thenReturn(Arrays.asList(card));
@@ -76,7 +87,9 @@ public class CardsControllerTests {
 				.andExpect(jsonPath("@.[0].code").value("333"))
 				;
 	}
+
 	@Test
+	@WithMockUser
 	public void getOneCard_shouldRetrieveOneCard() throws Exception {
 		Mockito.when(repository.findById(any())).thenReturn(Optional.of(card));
 		Mockito.when(delegate.byId(any())).thenReturn(card);
@@ -89,6 +102,7 @@ public class CardsControllerTests {
 	}
 
 	@Test
+	@WithMockUser
 	public void getNonExistingCard_shouldThrowException() throws Exception {
 		Mockito.when(repository.findById(any())).thenReturn(null);
 		Mockito.when(delegate.byId(any())).thenThrow(new CardNotFoundException());

@@ -25,25 +25,28 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.cloud.contract.stubrunner.spring.AutoConfigureStubRunner;
 import org.springframework.cloud.contract.stubrunner.spring.StubRunnerProperties;
 import org.springframework.test.context.junit4.SpringRunner;
+import org.springframework.web.reactive.function.client.WebClient;
 
+import static org.springframework.security.oauth2.client.web.reactive.function.client.ServerOAuth2AuthorizedClientExchangeFilterFunction.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 /**
  * @author Haytham Mohamed
  **/
 @RunWith(SpringRunner.class)
-@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.NONE
- , properties = {"services.cards.url=http://localhost:6565/cards"})
-@AutoConfigureStubRunner(ids = {"io.agilehandy:cards-api:+:stubs:6565"},
-		stubsMode = StubRunnerProperties.StubsMode.LOCAL)
+@AutoConfigureStubRunner(ids = {"io.agilehandy:cards-api:+:stubs:6565"}
+	,stubsMode = StubRunnerProperties.StubsMode.LOCAL)
 public class CardsContractTests {
-
-	@Autowired
-	CardsApiClient client;
 
 	@Test
 	public void getCardById_shouldRetrieveOneCard() throws CardNotFoundException {
-		Card card = client.getCard(1);
+		WebClient webClient = WebClient.create();
+		Card card = webClient
+				.get()
+				.uri("http://localhost:6565/cards/1")
+				.retrieve()
+				.bodyToMono(Card.class)
+				.block();
 		Assertions.assertThat(card.getCode()).isEqualTo("333");
 		Assertions.assertThat(card.getNumber()).isEqualTo("4409 3350 3050 2136");
 		Assertions.assertThat(card.getHolderName()).isEqualTo("Sam");

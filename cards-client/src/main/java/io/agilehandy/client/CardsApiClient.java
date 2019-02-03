@@ -21,8 +21,11 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
 import org.springframework.web.client.RestTemplate;
+import org.springframework.web.reactive.function.client.WebClient;
 
 import java.util.Date;
+
+import static org.springframework.security.oauth2.client.web.reactive.function.client.ServerOAuth2AuthorizedClientExchangeFilterFunction.*;
 
 /**
  * @author Haytham Mohamed
@@ -30,20 +33,28 @@ import java.util.Date;
 @Component
 public class CardsApiClient {
 
-	private final RestTemplate template;
+	private final WebClient webClient;
 	private final String url;
 	private final String merchant;
 
-	public CardsApiClient(RestTemplate template
+	public CardsApiClient(WebClient webClient
 			, @Value("${services.cards.url}") String url
 			, @Value("${merchant}") String merchant) {
-		this.template = template;
+		this.webClient = webClient;
 		this.merchant = merchant;
 		this.url = url;
 	}
 
 	public Card getCard(Integer id) throws CardNotFoundException {
-		Card card = template.getForEntity(url + "/"+id, Card.class).getBody();
+
+		Card card = this.webClient
+				.get()
+				.uri(url + "/"+id)
+				.attributes(clientRegistrationId("api-cards-view"))
+				.retrieve()
+				.bodyToMono(Card.class)
+				.block();
+
 		if (card == null) {
 			throw new CardNotFoundException();
 		}

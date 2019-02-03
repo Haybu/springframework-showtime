@@ -27,6 +27,8 @@ import org.junit.runner.RunWith;
 import org.mockito.Mockito;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.test.context.ActiveProfiles;
+import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.context.junit4.SpringRunner;
 
 import java.text.DecimalFormat;
@@ -39,6 +41,13 @@ import static org.mockito.ArgumentMatchers.*;
  **/
 @RunWith(SpringRunner.class)
 @WebMvcTest
+@TestPropertySource(properties = {
+		"eureka.client.register-with-eureka=false",
+		"eureka.client.fetch-registry=false",
+		"spring.cloud.config.enabled=false",
+		"currency=US-DOLLAR"
+})
+@ActiveProfiles("test")
 public class CardBase {
 
 	@MockBean

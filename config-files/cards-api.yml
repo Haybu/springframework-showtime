@@ -2,3 +2,10 @@ server:
   port: 8080
 
 currency: US-DOLLAR
+
+spring:
+  security:
+    oauth2:
+      resourceserver:
+        jwt:
+          jwk-set-uri: http://localhost:8099/uaa/token_keys
